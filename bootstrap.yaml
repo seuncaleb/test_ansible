@@ -1,0 +1,29 @@
+---
+- hosts: all
+  become: true
+  tasks:
+
+    - name: install update (ubuntu)
+      apt:
+        upgrade: yes 
+        update_cache: yes 
+      when: ansible_distribution == "Ubuntu"
+    
+    - name: create seuncaleb user
+      user:
+        name: seuncaleb
+        group: root 
+      
+    - name: add ssh key to user seuncaleb
+      authorized_key: 
+          user: seuncaleb
+          key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIG0jrnvfQR5x/VUd7inkdbQzTJ1qzCRLMKJ9/pdDJjNU ansible"
+
+    - name: add sudoers file for seuncaleb 
+      copy:
+         src: sudoer_seuncaleb
+         dest: /etc/sudoers.d/seuncaleb 
+         owner: root
+         group: root
+         mode: 0440
+
